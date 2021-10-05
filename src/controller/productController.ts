@@ -1,6 +1,6 @@
 import {IncomingMessage, ServerResponse} from 'http';
-
 const Product = require('../models/productModel')
+const {getPostDate} = require('../utils/utils')
 
 // @desc gets all products (route get /api/products)
 async function getProducts(req: IncomingMessage, res: ServerResponse) {
@@ -32,22 +32,16 @@ async function getProduct(req: IncomingMessage, res: ServerResponse, id: string)
 // @desc create  product (route post /api/products)
 async function createProduct(req: IncomingMessage, res: ServerResponse) {
     try {
-        let body = ''
-        req.on('data', (chunk) => {
-            body += chunk.toString()
-        })
-        req.on('end', async () => {
-            const {name, description, price} = JSON.parse(body)
-            const product = {
-                name,
-                description,
-                price
-            }
-            const newProduct = await Product.create(product)
-            res.writeHead(201, {'Content-Type': 'application/json'})
-            return res.end(JSON.stringify(newProduct))
-        })
-
+        const body = await getPostDate(req)
+        const {name, description, price} = JSON.parse(body)
+        const product = {
+            name,
+            description,
+            price
+        }
+        const newProduct = await Product.create(product)
+        res.writeHead(201, {'Content-Type': 'application/json'})
+        return res.end(JSON.stringify(newProduct))
     } catch (e) {
         console.log(e)
     }

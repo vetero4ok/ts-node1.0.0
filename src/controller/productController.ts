@@ -12,11 +12,12 @@ async function getProducts(req: IncomingMessage, res: ServerResponse) {
         console.log(e)
     }
 }
+
 // @desc gets 1 product (route get /api/products/id)
-async function getProduct(req: IncomingMessage, res: ServerResponse, id:string) {
+async function getProduct(req: IncomingMessage, res: ServerResponse, id: string) {
     try {
         const product = await Product.findById(id)
-        if(!product){
+        if (!product) {
             res.writeHead(404, {'Content-Type': 'application/json'})
             res.end(JSON.stringify({message: 'Bad Product Not Found'}))
         } else {
@@ -27,18 +28,26 @@ async function getProduct(req: IncomingMessage, res: ServerResponse, id:string) 
         console.log(e)
     }
 }
+
 // @desc create  product (route post /api/products)
 async function createProduct(req: IncomingMessage, res: ServerResponse) {
     try {
-        /** hard coded data  */
-       const product = {
-           name: 'Test product N2',
-           description: 'Testing the new product 2',
-           price: 85
-       }
-        const newProduct = await Product.create(product)
-        res.writeHead(201, {'Content-Type': 'application/json'})
-       return  res.end(JSON.stringify(newProduct))
+        let body = ''
+        req.on('data', (chunk) => {
+            body += chunk.toString()
+        })
+        req.on('end', async () => {
+            const {name, description, price} = JSON.parse(body)
+            const product = {
+                name,
+                description,
+                price
+            }
+            const newProduct = await Product.create(product)
+            res.writeHead(201, {'Content-Type': 'application/json'})
+            return res.end(JSON.stringify(newProduct))
+        })
+
     } catch (e) {
         console.log(e)
     }

@@ -1,29 +1,29 @@
 const products = require('../data/products.json')
 const {v4: uuidv4} = require('uuid');
 const { writeToFile } = require('../utils/utils')
-
-export type ProductModelType = {
+export type ProductType = ProductModelType & {
     id: string
+}
+export type ProductModelType = {
     name: string
     description: string
     price: number
 }
-
 //: Promise<T>
-function findAll(): Promise<Array<ProductModelType>> {
+function findAll(): Promise<Array<ProductType>> {
     return new Promise((res, rej) => {
         res(products)
     })
 }
 
-function findById(id: string): Promise<ProductModelType> {
+function findById(id: string): Promise<ProductType> {
     return new Promise((res, rej) => {
-        const product: ProductModelType = products.find((p: ProductModelType) => p.id === id)
+        const product: ProductType = products.find((p: ProductType) => p.id === id)
         res(product)
     })
 }
 
-function create(product:any): Promise<ProductModelType> {
+function create(product:ProductModelType): Promise<ProductType> {
     return new Promise((res, rej) => {
         const newProduct = {id: uuidv4(), ...product}
         products.push(newProduct)

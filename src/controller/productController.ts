@@ -1,7 +1,9 @@
+import {IncomingMessage, ServerResponse} from 'http';
+
 const Product = require('../models/productModel')
 
 // @desc gets all products (route get /api/products)
-async function getProducts(req: any, res: any) {
+async function getProducts(req: IncomingMessage, res: ServerResponse) {
     try {
         const products = await Product.findAll()
         res.writeHead(200, {'Content-Type': 'application/json'})
@@ -11,7 +13,7 @@ async function getProducts(req: any, res: any) {
     }
 }
 // @desc gets 1 product (route get /api/products/id)
-async function getProduct(req: any, res: any, id:string) {
+async function getProduct(req: IncomingMessage, res: ServerResponse, id:string) {
     try {
         const product = await Product.findById(id)
         if(!product){
@@ -26,7 +28,7 @@ async function getProduct(req: any, res: any, id:string) {
     }
 }
 // @desc create  product (route post /api/products)
-async function createProduct(req: any, res: any) {
+async function createProduct(req: IncomingMessage, res: ServerResponse) {
     try {
         /** hard coded data  */
        const product = {

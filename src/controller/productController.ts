@@ -1,4 +1,6 @@
 import {IncomingMessage, ServerResponse} from 'http';
+import {ProductModelType} from '../models/productModel';
+
 const Product = require('../models/productModel')
 const {getPostDate} = require('../utils/utils')
 
@@ -47,8 +49,33 @@ async function createProduct(req: IncomingMessage, res: ServerResponse) {
     }
 }
 
+// @desc update  product (route put /api/products)
+async function updateProduct(req: IncomingMessage, res: ServerResponse, id: string) {
+    try {
+        const product = await Product.findById(id)
+        if (!product) {
+            res.writeHead(404, {'Content-Type': 'application/json'})
+            res.end(JSON.stringify({message: 'Bad Product Not Found'}))
+        } else {
+            const body = await getPostDate(req)
+            const {name, description, price} = JSON.parse(body)
+            const productData: ProductModelType = {
+                name: name || product.name,
+                description: description || product.description,
+                price: price || product.price
+            }
+            const updateProduct = await Product.update(productData, id)
+            res.writeHead(200, {'Content-Type': 'application/json'})
+            return res.end(JSON.stringify(updateProduct))
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 module.exports = {
     getProducts,
     getProduct,
     createProduct,
+    updateProduct,
 }

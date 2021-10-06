@@ -24,8 +24,6 @@ function getPostDate(req: IncomingMessage) {
             console.log(err)
         }
     })
-
-
 }
 
 module.exports = {

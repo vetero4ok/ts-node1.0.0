@@ -31,9 +31,18 @@ function create(product:ProductModelType): Promise<ProductType> {
         res(newProduct)
     })
 }
+function update(product:ProductModelType, id:string): Promise<ProductType> {
+    return new Promise((res, rej) => {
+        const index = products.findIndex((p:ProductType)=> p.id === id)
+        products[index] = {id, ...product}
+        writeToFile('./src/data/products.json', products)
+        res(products[index])
+    })
+}
 
 module.exports = {
     findAll,
     findById,
     create,
+    update,
 }

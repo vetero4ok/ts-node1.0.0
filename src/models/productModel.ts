@@ -1,4 +1,4 @@
-const products = require('../data/products.json')
+let products = require('../data/products.json')
 const {v4: uuidv4} = require('uuid');
 const { writeToFile } = require('../utils/utils')
 export type ProductType = ProductModelType & {
@@ -39,10 +39,18 @@ function update(product:ProductModelType, id:string): Promise<ProductType> {
         res(products[index])
     })
 }
+function remove(id:string): Promise<{}> {
+    return new Promise((res, rej) => {
+    products = products.filter((p:ProductType)=> p.id !== id)
+        writeToFile('./src/data/products.json', products)
+        res({})
+    })
+}
 
 module.exports = {
     findAll,
     findById,
     create,
     update,
+    remove,
 }
